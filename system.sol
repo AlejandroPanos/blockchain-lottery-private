@@ -157,7 +157,7 @@ contract Lottery {
     }
 
     // Function to return tokens
-    function returnTokens(uint _numTokens) public payable {
+    function returnTokens(uint _numTokens) public {
 
         // Check that the number of tokes is greater than 0
         require(_numTokens > 0, 'Need to return a number greater than 0');
