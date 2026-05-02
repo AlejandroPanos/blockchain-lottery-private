@@ -179,16 +179,22 @@ contract Lottery {
     function returnTokens(uint _numTokens) public {
 
         // Check that the number of tokes is greater than 0
-        require(_numTokens > 0, 'Need to return a number greater than 0');
+        if (_numTokens == 0) {
+            revert Lottery__NotEnoughTokens();
+        }
 
         // User should have the tokens to be returned
-        require(_numTokens <= checkPersonalTokens(), 'You do not have the required amount of tokens');
+        if (_numTokens > checkPersonalTokens()) {
+            revert Lottery__NotEnoughTokens();
+        }
 
         // Client returns tokens
         token.transferLottery(msg.sender, smartContract, _numTokens);
         uint returnValue = setTokenValue(_numTokens);
         (bool success, ) = payable(msg.sender).call{value: returnValue}('');
-        require(success, 'ETH transfer failed');
+        if (!success) {
+            revert Lottery_TransferFailed();
+        }
 
         // Emit event
         emit TokensReturned(returnValue, msg.sender);
