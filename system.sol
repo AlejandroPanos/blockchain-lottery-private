@@ -18,6 +18,8 @@ contract Lottery {
     error Lottery_TransferFailed();
     error Lottery__PriceGreaterThanAmountSent();
     error Lottery__NotEnoughBalanceAvailable();
+    error Lottery__NotEnoughTokens();
+    error Lottery__NoTicketsBought();
 
     // Initial declarations
     ERC20Basic private token;
@@ -70,7 +72,6 @@ contract Lottery {
         if (msg.value < price) {
             revert Lottery__PriceGreaterThanAmountSent();
         }
-        require(msg.value >= price, 'Cannot purchase this amount');
 
         // Check return value
         uint returnValue = msg.value - price;
@@ -126,7 +127,9 @@ contract Lottery {
         uint price = _numTickets * ticketPrice;
 
         // Check if person has enough tokens
-        require(price <= checkPersonalTokens(), 'You need to acquire more tokens');
+        if (price > checkPersonalTokens()) {
+            revert Lottery__NotEnoughTokens();
+        }
 
         // Transfer tokens to owner
         token.transferLottery(msg.sender, owner, price);
@@ -151,7 +154,9 @@ contract Lottery {
     function createWinner() public OnlyOwner(msg.sender){
 
         // Check if there are tickets sold
-        require(ticketsBought.length > 0, 'No tickets bought');
+        if (ticketsBought.length == 0) {
+            revert Lottery__NoTicketsBought();
+        }
 
         // Declare length of array
         uint length = ticketsBought.length;
