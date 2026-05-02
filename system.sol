@@ -16,6 +16,7 @@ contract Lottery {
     // Custom errors
     error Lottery__NotTheOwner();
     error Lottery_TransferFailed();
+    error Lottery__PriceGreaterThanAmountSent();
 
     // Initial declarations
     ERC20Basic private token;
@@ -64,7 +65,10 @@ contract Lottery {
         // Calculate token price
         uint price = setTokenValue(_numTokens);
 
-        // Require
+        // Check
+        if (msg.value < price) {
+            revert Lottery__PriceGreaterThanAmountSent();
+        }
         require(msg.value >= price, 'Cannot purchase this amount');
 
         // Check return value
