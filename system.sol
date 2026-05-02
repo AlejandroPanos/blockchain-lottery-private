@@ -5,10 +5,12 @@ import {ERC20Basic} from './ERC20.sol';
 
 /**
  * @title Lottery
+ * @author Alejandro Paños
  * @notice A decentralised lottery system where users buy tokens with ETH,
  * use tokens to purchase lottery tickets, and the owner selects a winner
  * who receives the entire token jackpot.
- * @dev Uses a custom ERC20Basic token for internal accounting.
+ * @dev Uses a custom ERC20Basic token for internal accounting. In a production
+ * environment, it would be best to use OpenZeppelin's mock contracts.
  * @dev WARNING: Randomness is derived from block.timestamp and is manipulable.
  * Do not use in production — replace with Chainlink VRF.
  */
