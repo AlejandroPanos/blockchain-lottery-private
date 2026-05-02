@@ -15,6 +15,7 @@ import {ERC20Basic} from './ERC20.sol';
 contract Lottery {
     // Custom errors
     error Lottery__NotTheOwner();
+    error Lottery_TransferFailed();
 
     // Initial declarations
     ERC20Basic private token;
@@ -71,7 +72,9 @@ contract Lottery {
 
         // Transfer the remainder
         (bool success, ) = payable(msg.sender).call{value: returnValue}('');
-        require(success, 'ETH transfer failed');
+        if (!success) {
+            revert Lottery_TransferFailed();
+        }
 
         // Find token balance in contract
         uint balance = availableTokens();
