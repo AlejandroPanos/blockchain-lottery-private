@@ -13,6 +13,8 @@ import {ERC20Basic} from './ERC20.sol';
  * Do not use in production — replace with Chainlink VRF.
  */
 contract Lottery {
+    // Custom errors
+    error Lottery__NotTheOwner();
 
     // Initial declarations
     ERC20Basic private token;
@@ -34,7 +36,9 @@ contract Lottery {
 
     // Modifiers
     modifier OnlyOwner(address _address) {
-        require(_address == owner, 'Cannot run this function');
+        if (_address != owner) {
+            revert Lottery__NotTheOwner();
+        }
         _;
     }
 
