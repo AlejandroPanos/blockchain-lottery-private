@@ -17,6 +17,7 @@ contract Lottery {
     error Lottery__NotTheOwner();
     error Lottery_TransferFailed();
     error Lottery__PriceGreaterThanAmountSent();
+    error Lottery__NotEnoughBalanceAvailable();
 
     // Initial declarations
     ERC20Basic private token;
@@ -84,7 +85,9 @@ contract Lottery {
         uint balance = availableTokens();
 
         // Filter to chack if person can buy the specified amount
-        require(_numTokens <= balance, 'Not enough tokens available');
+        if (_numTokens > balance) {
+            revert Lottery__NotEnoughBalanceAvailable();
+        }
 
         // Transfer tokens to buyer
         token.transfer(msg.sender, _numTokens);
